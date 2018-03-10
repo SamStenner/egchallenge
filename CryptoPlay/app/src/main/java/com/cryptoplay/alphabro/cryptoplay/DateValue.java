@@ -11,16 +11,14 @@ public class DateValue {
 
     private Date date;
     private float open, close, low, high;
-    private int volume, marketCap;
+    private long volume, marketCap;
 
-    public DateValue(Date date, float open, float high, float low, float close,
-                     int volume, int marketCap) {
+    public DateValue(Date date, float open, float high, float low, float close, long vloume, long marketCap) {
         this.date = date;
         this.open = open;
         this.close = close;
         this.low = low;
         this.high = high;
-        this.volume = volume;
         this.marketCap = marketCap;
     }
 
@@ -64,19 +62,19 @@ public class DateValue {
         this.high = high;
     }
 
-    public int getVolume() {
-        return volume;
-    }
-
-    public void setVolume(int volume) {
-        this.volume = volume;
-    }
-
-    public int getMarketCap() {
+    public long getMarketCap() {
         return marketCap;
     }
 
     public void setMarketCap(int marketCap) {
         this.marketCap = marketCap;
+    }
+
+    public long getVolume() {
+        return volume;
+    }
+
+    public void setVolume(long volume) {
+        this.volume = volume;
     }
 }

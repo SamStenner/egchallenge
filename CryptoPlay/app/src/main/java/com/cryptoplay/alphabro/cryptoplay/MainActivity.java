@@ -33,8 +33,10 @@ import java.util.Date;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
-    public class MainActivity extends AppCompatActivity
+public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    ArrayList<Coin> allCoins = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -130,27 +132,41 @@ import java.util.Scanner;
     }
 
     private void readFile() {
-        ArrayList<Coin> allCoins = new ArrayList<>();
 
         InputStream stream = getResources().openRawResource(R.raw.coin_data);
         Scanner scanner = new Scanner(stream);
 
         String line = scanner.nextLine();
+        line = scanner.nextLine();
 
         try {
             while (line!= null) {
+
                 String[] comps = line.split(",");
-                Log.d("comps", line );
                 line = scanner.nextLine();
+
+                if (comps.length < 8) {
+                    Log.d("Warning invalid data", line);
+                    for (String comp: comps) {
+                        Log.d("comp", comp);
+                    }
+                    continue;
+                }
+
                 SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+
+                long volume = 0;
+                if (!comps[6].equals("")) {
+                    volume = Double.valueOf(comps[6]).longValue();
+                }
 
                 DateValue dateValue = new DateValue(dateFormat.parse(comps[0]),
                         Float.parseFloat(comps[2]),
                         Float.parseFloat(comps[3]),
                         Float.parseFloat(comps[4]),
                         Float.parseFloat(comps[5]),
-                        Integer.parseInt(comps[6]),
-                        Integer.parseInt(comps[7]));
+                        volume,
+                        Double.valueOf(comps[7]).longValue());
 
                 Boolean exists = false;
                 for (Coin coin: allCoins) {
@@ -164,15 +180,12 @@ import java.util.Scanner;
                     allCoins.add(new Coin(comps[1], dateValue));
                 }
 
-
             }
         } catch (NoSuchElementException e) {
             Log.d("End of file", line);
         } catch (ParseException e) {
             e.printStackTrace();
         }
-
-
     }
 
 }
