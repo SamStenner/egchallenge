@@ -1,6 +1,7 @@
 package com.cryptoplay.alphabro.cryptoplay;
 
 import java.time.LocalDate;
+import java.util.Date;
 
 /**
  * Created by android on 10/03/18.
@@ -8,11 +9,11 @@ import java.time.LocalDate;
 
 public class DateValue {
 
-    private LocalDate date;
+    private Date date;
     private float open, close, low, high;
     private int volume, marketCap;
 
-    public DateValue(LocalDate date, float open, float close, float low, float high,
+    public DateValue(Date date, float open, float high, float low, float close,
                      int volume, int marketCap) {
         this.date = date;
         this.open = open;
@@ -23,11 +24,11 @@ public class DateValue {
         this.marketCap = marketCap;
     }
 
-    public LocalDate getDate() {
+    public Date getDate() {
         return date;
     }
 
-    public void setDate(LocalDate date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 

@@ -3,6 +3,7 @@
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -16,6 +17,21 @@ import android.view.MenuItem;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
+
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.NoSuchElementException;
+import java.util.Scanner;
 
     public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -42,6 +58,8 @@ import com.jjoe64.graphview.series.LineGraphSeries;
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
+
+        readFile();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
@@ -110,4 +128,51 @@ import com.jjoe64.graphview.series.LineGraphSeries;
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+    private void readFile() {
+        ArrayList<Coin> allCoins = new ArrayList<>();
+
+        InputStream stream = getResources().openRawResource(R.raw.coin_data);
+        Scanner scanner = new Scanner(stream);
+
+        String line = scanner.nextLine();
+
+        try {
+            while (line!= null) {
+                String[] comps = line.split(",");
+                Log.d("comps", line );
+                line = scanner.nextLine();
+                SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+
+                DateValue dateValue = new DateValue(dateFormat.parse(comps[0]),
+                        Float.parseFloat(comps[2]),
+                        Float.parseFloat(comps[3]),
+                        Float.parseFloat(comps[4]),
+                        Float.parseFloat(comps[5]),
+                        Integer.parseInt(comps[6]),
+                        Integer.parseInt(comps[7]));
+
+                Boolean exists = false;
+                for (Coin coin: allCoins) {
+                    if (coin.getName().equals(comps[1])) {
+                        exists = true;
+                        coin.addHistory(dateValue);
+                    }
+                }
+
+                if (!exists) {
+                    allCoins.add(new Coin(comps[1], dateValue));
+                }
+
+
+            }
+        } catch (NoSuchElementException e) {
+            Log.d("End of file", line);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
 }
